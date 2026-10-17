@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DoH与DoT安全协议详解：彻底根除DNS污染与劫持的实战方案 - 星际视界</title>
+  <meta name="description" content="深入解构现代 DNS 加密协议。对比基于 HTTPS 的 DNS（DoH）与基于 TLS 的 DNS（DoT）的包封装差异，解析中间人劫持根源与构建零泄露纯净解析链条的最佳工程实践。">
+  <meta name="keywords" content="DoH协议, DoT协议, DNS防污染, DNS泄露防护, 域名劫持, 加密DNS, 科学上网设置">
+  <link rel="canonical" href="https://runwayvpn.mom/encrypted-dns-leak-prevention-handbook.html">
+  
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Runway">
+  <meta property="og:title" content="DoH与DoT安全协议详解：彻底根除DNS污染与劫持的实战方案">
+  <meta property="og:description" content="筑牢网络导航的加密堤坝：详解现代 DoH 与 DoT 协议如何捍卫纯净寻址。">
+  <meta property="og:url" content="https://runwayvpn.mom/encrypted-dns-leak-prevention-handbook.html">
+  <meta property="og:image" content="https://runwayvpn.mom/og-preview.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Runway 首页",
+        "item": "https://runwayvpn.mom/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "星际视界",
+        "item": "https://runwayvpn.mom/dispatch.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "DoH与DoT安全加密解析",
+        "item": "https://runwayvpn.mom/encrypted-dns-leak-prevention-handbook.html"
+      }
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 深空星轨报头 -->
+  <header class="orbital-header">
+    <div class="cosmic-wrapper orbital-bar">
+      <a href="index.html" class="orbital-logo" aria-label="Runway 首页">
+        <svg viewBox="0 0 210 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="26" cy="21" rx="20" ry="8" stroke="#3B82F6" stroke-width="1.8" transform="rotate(-25 26 21)" stroke-dasharray="3 2"/>
+          <circle cx="26" cy="21" r="11" fill="#2563EB"/>
+          <circle cx="34" cy="14" r="2.5" fill="#F59E0B"/>
+          <text x="56" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="800" letter-spacing="2.5" fill="#FFFFFF">RUNWAY</text>
+        </svg>
+      </a>
+
+      <!-- 桌面端星轨导航菜单 -->
+      <nav class="orbital-nav" aria-label="全域导航菜单">
+        <a href="index.html#strength">核心实力</a>
+        <a href="index.html#orbit-media">全域加速</a>
+        <a href="index.html#pricing">漫游方案</a>
+        <a href="index.html#transmissions">用户心声</a>
+        <a href="index.html#faq">常见问答</a>
+        <a href="dispatch.html" style="color: var(--amber-star);">星际视界</a>
+      </nav>
+
+      <div class="orbital-actions">
+        <a href="https://ww012.twilightaff.com/#/?code=A56DH1Af" target="_blank" rel="nofollow" class="cosmic-btn btn-ghost">登录控制台</a>
+        <a href="https://ww012.twilightaff.com/#/?code=A56DH1Af" target="_blank" rel="nofollow" class="cosmic-btn btn-starlight">获取漫游通行证</a>
+      </div>
+
+      <button class="orbital-menu-toggle" id="cosmicMenuToggle" aria-label="切换导航菜单" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <div class="orbital-mobile-panel" id="cosmicMobilePanel">
+      <ul class="orbital-mobile-links">
+        <li><a href="index.html#strength"><span>连接实力与全域通达</span><small>✦</small></a></li>
+        <li><a href="index.html#orbit-media"><span>全域流媒体与智算加速</span><small>✦</small></a></li>
+        <li><a href="index.html#pricing"><span>无限漫游通行矩阵</span><small>✦</small></a></li>
+        <li><a href="index.html#transmissions"><span>全球漫游者声音</span><small>✦</small></a></li>
+        <li><a href="index.html#faq"><span>星际互联常见问答</span><small>✦</small></a></li>
+        <li><a href="dispatch.html"><span>星际视界前沿通讯</span><small>✦</small></a></li>
+      </ul>
+      <div class="orbital-mobile-actions">
+        <a href="index.html" class="cosmic-btn btn-ghost">返回主站</a>
+        <a href="https://ww012.twilightaff.com/#/?code=A56DH1Af" target="_blank" rel="nofollow" class="cosmic-btn btn-starlight">即刻启航订阅</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="cosmic-article-sheet">
+    <div class="cosmic-wrapper">
+      <div class="cosmic-article-box">
+        
+        <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">
+          <a href="index.html" style="color: #93C5FD; text-decoration: none;">首页</a> ✦ 
+          <a href="dispatch.html" style="color: #93C5FD; text-decoration: none;">星际视界</a> ✦ 
+          <span style="color: var(--amber-star);">协议安全手册</span>
+        </div>
+
+        <h1 class="cosmic-article-title">DoH与DoT安全协议详解：彻底根除DNS污染与劫持的实战方案</h1>
+        <div class="cosmic-article-meta">编撰：网络协议工程组 · 日期：2026年10月15日 · 预计阅读时间：5分钟</div>
+
+        <div class="cosmic-article-body">
+          <p>
+            域名系统（DNS）被誉为整个互联网的寻址指南针。然而，诞生于数十年前的传统 DNS 协议默认使用完全明文的 UDP 53 端口传输。正如专业极客知识库 <a href="https://tizilab.net/" target="_blank">TiziLab 科学上网博客</a> 的深度剖析所言，由于明文报文没有任何加密与防篡改验证，网络中继路由设备可以轻而易举地窥视用户的寻址目标，甚至抢先伪造返回错误的虚假 IP 地址，这就是臭名昭著的“DNS 污染与重定向劫持”。
+          </p>
+
+          <h2>一、传统明文 DNS 的致命隐患</h2>
+          <p>
+            当用户在浏览器中输入目标网址时，本地操作系统会向运营商默认 DNS 发出查询。中间监听者可以通过旁路入侵设备实时监测每一个查询请求。一旦发现敏感或特定域名，便立刻抢在正规服务器响应之前注入伪造的 RST 报文或虚假回执。这不仅导致目标网站无法加载，还使用户的个人隐私与访问偏好暴露无遗，甚至引发恶意的钓鱼网站流量导向与数据截胡风险。
+          </p>
+
+          <h2>二、DoT 与 DoH 的技术实现路径与差异</h2>
+          <h3>1. DNS-over-TLS（DoT）：传输层通道加密</h3>
+          <p>
+            DoT（RFC 7858）将原本明文的 DNS 数据流封装在经过双向认证的 TLS 加密隧道之中，默认使用专有的 TCP 853 端口。它的优点在于协议职责清晰、开销较小；然而，由于 853 端口特征过于显著，在某些受限的企业网络或高敏感防火墙环境下，极易被防火墙规则直接单点封堵。
+          </p>
+          <h3>2. DNS-over-HTTPS（DoH）：应用层拟态融合</h3>
+          <p>
+            DoH（RFC 8484）则进一步演进，将 DNS 报文巧妙伪装为标准的 HTTP/2 或 HTTP/3 二进制数据，经由所有网络都必须开放的 TCP/UDP 443 端口传输。对于外部监控设备而言，一条 DoH 查询请求在外观上与正常的 HTTPS 网页浏览流量没有任何区别，从而拥有极高的抗审查与抗特征识别能力。
+          </p>
+
+          <h2>三、根治 DNS 泄露（DNS Leak）的系统级工程</h2>
+          <p>
+            即便开启了加密代理，许多用户依然会遭遇“DNS 泄露”问题——即数据流量走了专线，但域名的解析请求却悄悄走回了本地运营商的明文 53 端口。
+          </p>
+          <ul>
+            <li><strong>远端代理解析优先（Remote DNS）：</strong>客户端配置的核心原则是强制所有域名解析全部转发至远端安全节点执行，本地系统协议栈不发起任何外联查询。</li>
+            <li><strong>自建纯内存递归解析集群：</strong>在专属专线出口端部署非商业化、RAM-only 运行的 Unbound 递归 DNS。直接向全球根服务器（Root Servers）层级查询，不经由任何第三方商业公用 DNS，做到绝不留存文本日志。</li>
+            <li><strong>彻底剔除 EDNS 客户端子网信息（ECS）：</strong>主流公共 DNS 常用 ECS 协议向权威服务器暴露客户端真实 IP 掩码网段。专线节点强制剥离 ECS 头标，确保地理位置信息零回溯。</li>
+          </ul>
+
+          <div class="cosmic-callout-pod">
+            <strong>终端用户防劫持配置建议</strong>
+            在手机及 PC 客户端的代理核心中，务必将 DNS 运行模式选为“Fake-IP”或远端映射模式，并在系统层彻底禁用 IPv6 默认回退查询，以此斩断任何潜在的明文泄漏通道。
+          </div>
+
+          <h2>四、结语</h2>
+          <p>
+            从明文裸奔到端到端强力加密，DNS 技术的演变构成了当代互联网隐私保卫战的关键前沿。深入理解 DoH 与 DoT 的运作哲学，构筑全方位的防泄露壁垒，才能让每一位数字探索者的罗盘永远指向真实、纯净的目标彼岸，在纷繁复杂的网络空间中从容航行。
+          </p>
+        </div>
+
+        <div class="cosmic-author-footer">
+          <div>
+            <strong style="color: #FFFFFF;">Runway 深空网络架构组</strong>
+            <p style="font-size: 13px; color: var(--text-muted); margin: 4px 0 0;">探索深海光缆通信与纯内存安全防线的前沿实验室</p>
+          </div>
+          <a href="dispatch.html" class="dispatch-read-more">✦ 返回星际视界专栏</a>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="cosmic-footer">
+    <div class="cosmic-wrapper">
+      <nav class="footer-orbital-links">
+        <a href="sitemap.html">网站地图</a>
+        <a href="about.html">关于我们</a>
+        <a href="terms.html">服务条款</a>
+        <a href="privacy.html">隐私政策</a>
+      </nav>
+      <div class="footer-starlight-copy">
+        &copy; 2026 Runway Network Services. 保留所有权利。
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var toggle = document.getElementById('cosmicMenuToggle');
+      var panel = document.getElementById('cosmicMobilePanel');
+      if (toggle && panel) {
+        toggle.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var isOpen = panel.classList.contains('is-open');
+          toggle.classList.toggle('active', !isOpen);
+          panel.classList.toggle('is-open', !isOpen);
+          toggle.setAttribute('aria-expanded', !isOpen);
+        });
+        panel.querySelectorAll('a').forEach(function(link) {
+          link.addEventListener('click', function() {
+            toggle.classList.remove('active');
+            panel.classList.remove('is-open');
+            toggle.setAttribute('aria-expanded', 'false');
+          });
+        });
+        document.addEventListener('click', function(e) {
+          if (!panel.contains(e.target) && !toggle.contains(e.target)) {
+            toggle.classList.remove('active');
+            panel.classList.remove('is-open');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>
