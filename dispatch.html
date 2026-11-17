@@ -1,25 +1,23 @@
 <!DOCTYPE html>
+
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>星际视界：使用手记、协议常识与排障指南 - Runway</title>
-  <meta name="description" content="Runway 星际视界专栏：日常使用流程、Git 加速设置、DNS 缓存排查、QUIC 常识、隐私宣传解读与海底光缆影响。">
-  <meta name="keywords" content="星际视界, 网络技术通讯, 海底光缆, 无盘内存服务器, 加密DNS, QUIC协议, 梯子技术">
-  <link rel="canonical" href="https://runwayvpn.mom/dispatch.html">
-  
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Runway">
-  <meta property="og:title" content="星际视界 - Runway 全域漫游专线深度技术通讯与深空观察">
-  <meta property="og:description" content="探索无界星图背后的物理光缆与前沿传输协议工程，为跨洋漫游提供硬核技术指引。">
-  <meta property="og:url" content="https://runwayvpn.mom/dispatch.html">
-  <meta property="og:image" content="https://runwayvpn.mom/og-preview.jpg">
-
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="星际视界 - Runway 全域漫游专线深度技术通讯">
-  <meta name="twitter:description" content="探索无界星图背后的物理光缆与前沿传输协议工程。">
-
-  <script type="application/ld+json">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>星际视界：使用手记、协议常识与排障指南 - Runway</title>
+<meta content="Runway 星际视界专栏：日常使用流程、Git 加速设置、DNS 缓存排查、QUIC 常识、隐私宣传解读与海底光缆影响。" name="description"/>
+<meta content="星际视界, 网络技术通讯, 海底光缆, 无盘内存服务器, 加密DNS, QUIC协议, 梯子技术" name="keywords"/>
+<link href="https://runwayvpn.mom/dispatch.html" rel="canonical"/>
+<meta content="website" property="og:type"/>
+<meta content="Runway" property="og:site_name"/>
+<meta content="星际视界 - Runway 全域漫游专线深度技术通讯与深空观察" property="og:title"/>
+<meta content="探索无界星图背后的物理光缆与前沿传输协议工程，为跨洋漫游提供硬核技术指引。" property="og:description"/>
+<meta content="https://runwayvpn.mom/dispatch.html" property="og:url"/>
+<meta content="https://runwayvpn.mom/og-preview.jpg" property="og:image"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="星际视界 - Runway 全域漫游专线深度技术通讯" name="twitter:title"/>
+<meta content="探索无界星图背后的物理光缆与前沿传输协议工程。" name="twitter:description"/>
+<script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -39,194 +37,179 @@
     ]
   }
   </script>
-
-  <link rel="stylesheet" href="style.css">
+<link href="style.css" rel="stylesheet"/>
 </head>
 <body>
-
-  <!-- 深空星轨报头 -->
-  <header class="orbital-header">
-    <div class="cosmic-wrapper orbital-bar">
-      <a href="index.html" class="orbital-logo" aria-label="Runway 首页">
-        <svg viewBox="0 0 210 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="26" cy="21" rx="20" ry="8" stroke="#3B82F6" stroke-width="1.8" transform="rotate(-25 26 21)" stroke-dasharray="3 2"/>
-          <circle cx="26" cy="21" r="11" fill="#2563EB"/>
-          <circle cx="34" cy="14" r="2.5" fill="#F59E0B"/>
-          <text x="56" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="800" letter-spacing="2.5" fill="#FFFFFF">RUNWAY</text>
-        </svg>
-      </a>
-
-      <!-- 桌面端星轨导航菜单 -->
-      <nav class="orbital-nav" aria-label="全域导航菜单">
-        <a href="index.html#strength">核心实力</a>
-        <a href="index.html#orbit-media">全域加速</a>
-        <a href="index.html#pricing">漫游方案</a>
-        <a href="index.html#transmissions">用户心声</a>
-        <a href="index.html#faq">常见问答</a>
-        <a href="dispatch.html" class="active" style="color: var(--amber-star);">星际视界</a>
-      </nav>
-
-      <div class="orbital-actions">
-        <a href="https://ww012.twilightaff.com/#/?code=A56DH1Af" target="_blank" rel="nofollow" class="cosmic-btn btn-ghost">登录控制台</a>
-        <a href="https://ww012.twilightaff.com/#/?code=A56DH1Af" target="_blank" rel="nofollow" class="cosmic-btn btn-starlight">获取漫游通行证</a>
-      </div>
-
-      <button class="orbital-menu-toggle" id="cosmicMenuToggle" aria-label="切换导航菜单" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-
-    <!-- 移动端星轨导航抽屉 -->
-    <div class="orbital-mobile-panel" id="cosmicMobilePanel">
-      <ul class="orbital-mobile-links">
-        <li><a href="index.html#strength"><span>连接实力与全域通达</span><small>✦</small></a></li>
-        <li><a href="index.html#orbit-media"><span>全域流媒体与智算加速</span><small>✦</small></a></li>
-        <li><a href="index.html#pricing"><span>无限漫游通行矩阵</span><small>✦</small></a></li>
-        <li><a href="index.html#transmissions"><span>全球漫游者声音</span><small>✦</small></a></li>
-        <li><a href="index.html#faq"><span>星际互联常见问答</span><small>✦</small></a></li>
-        <li><a href="dispatch.html"><span>星际视界前沿通讯</span><small>✦</small></a></li>
-      </ul>
-      <div class="orbital-mobile-actions">
-        <a href="index.html" class="cosmic-btn btn-ghost">返回主站</a>
-        <a href="https://ww012.twilightaff.com/#/?code=A56DH1Af" target="_blank" rel="nofollow" class="cosmic-btn btn-starlight">即刻启航订阅</a>
-      </div>
-    </div>
-  </header>
-
-  <!-- 星际视界主体 -->
-  <main class="dispatch-hub-section">
-    <div class="cosmic-wrapper">
-      <div class="dispatch-header">
-        <div class="badge-orbit">DEEP SPACE TELEMETRY DISPATCH</div>
-        <h1 class="cosmic-title-gradient">星际视界 · 使用手记与排障指南</h1>
-        <p class="cosmic-lead-text">
+<!-- 深空星轨报头 -->
+<header class="orbital-header">
+<div class="cosmic-wrapper orbital-bar">
+<a aria-label="Runway 首页" class="orbital-logo" href="index.html">
+<svg fill="none" viewbox="0 0 210 42" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="26" cy="21" rx="20" ry="8" stroke="#3B82F6" stroke-dasharray="3 2" stroke-width="1.8" transform="rotate(-25 26 21)"></ellipse>
+<circle cx="26" cy="21" fill="#2563EB" r="11"></circle>
+<circle cx="34" cy="14" fill="#F59E0B" r="2.5"></circle>
+<text fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="800" letter-spacing="2.5" x="56" y="30">RUNWAY</text>
+</svg>
+</a>
+<!-- 桌面端星轨导航菜单 -->
+<nav aria-label="全域导航菜单" class="orbital-nav">
+<a href="index.html#strength">核心实力</a>
+<a href="index.html#orbit-media">全域加速</a>
+<a href="index.html#pricing">漫游方案</a>
+<a href="index.html#transmissions">用户心声</a>
+<a href="index.html#faq">常见问答</a>
+<a class="active" href="dispatch.html" style="color: var(--amber-star);">星际视界</a>
+</nav>
+<div class="orbital-actions">
+<a class="cosmic-btn btn-ghost" href="https://ww012.twilightaff.com/#/?code=A56DH1Af" rel="nofollow" target="_blank">登录控制台</a>
+<a class="cosmic-btn btn-starlight" href="https://ww012.twilightaff.com/#/?code=A56DH1Af" rel="nofollow" target="_blank">获取漫游通行证</a>
+</div>
+<button aria-expanded="false" aria-label="切换导航菜单" class="orbital-menu-toggle" id="cosmicMenuToggle">
+<span></span><span></span><span></span>
+</button>
+</div>
+<!-- 移动端星轨导航抽屉 -->
+<div class="orbital-mobile-panel" id="cosmicMobilePanel">
+<ul class="orbital-mobile-links">
+<li><a href="index.html#strength"><span>连接实力与全域通达</span><small>✦</small></a></li>
+<li><a href="index.html#orbit-media"><span>全域流媒体与智算加速</span><small>✦</small></a></li>
+<li><a href="index.html#pricing"><span>无限漫游通行矩阵</span><small>✦</small></a></li>
+<li><a href="index.html#transmissions"><span>全球漫游者声音</span><small>✦</small></a></li>
+<li><a href="index.html#faq"><span>星际互联常见问答</span><small>✦</small></a></li>
+<li><a href="dispatch.html"><span>星际视界前沿通讯</span><small>✦</small></a></li>
+</ul>
+<div class="orbital-mobile-actions">
+<a class="cosmic-btn btn-ghost" href="index.html">返回主站</a>
+<a class="cosmic-btn btn-starlight" href="https://ww012.twilightaff.com/#/?code=A56DH1Af" rel="nofollow" target="_blank">即刻启航订阅</a>
+</div>
+</div>
+</header>
+<!-- 星际视界主体 -->
+<main class="dispatch-hub-section">
+<div class="cosmic-wrapper">
+<div class="dispatch-header">
+<div class="badge-orbit">DEEP SPACE TELEMETRY DISPATCH</div>
+<h1 class="cosmic-title-gradient">星际视界 · 使用手记与排障指南</h1>
+<p class="cosmic-lead-text">
         把日常使用中的小问题讲清楚：怎么设置、怎么判断、怎么应对。
       </p>
-      </div>
-
-      <div class="dispatch-grid">
-        <!-- 文章 1: Runway 星图架构 -->
-        <article class="dispatch-card">
-          <div class="dispatch-meta">
-            <span class="dispatch-tag">使用手记</span>
-            <time datetime="2026-11-15">2026-11-15</time>
-          </div>
-          <h2 class="dispatch-title">
-            <a href="runway-orbital-network-architecture.html">Runway 使用手记：节点、规则与日常切换的一套流程</a>
-          </h2>
-          <p class="dispatch-snippet">
+</div>
+<div class="dispatch-grid">
+<!-- 文章 1: Runway 星图架构 -->
+<article class="dispatch-card">
+<div class="dispatch-meta">
+<span class="dispatch-tag">使用手记</span>
+<time datetime="2026-11-15">2026-11-15</time>
+</div>
+<h2 class="dispatch-title">
+<a href="runway-orbital-network-architecture.html">Runway机场节点怎样整理：用任务地图替代反复盲选地区</a>
+</h2>
+<p class="dispatch-snippet">
           把节点、规则和切换整理成固定流程，日常使用会省心很多。
         </p>
-          <a href="runway-orbital-network-architecture.html" class="dispatch-read-more">
+<a class="dispatch-read-more" href="runway-orbital-network-architecture.html">
             探索深空通讯 <span>✦</span>
-          </a>
-        </article>
-
-        <!-- 文章 2: 跨太平洋海底光缆 -->
-        <article class="dispatch-card">
-          <div class="dispatch-meta">
-            <span class="dispatch-tag">网络常识</span>
-            <time datetime="2026-11-10">2026-11-10</time>
-          </div>
-          <h2 class="dispatch-title">
-            <a href="submarine-cable-routes-pacific-transit.html">海底光缆出问题时：延迟为什么会突然变高</a>
-          </h2>
-          <p class="dispatch-snippet">
+</a>
+</article>
+<!-- 文章 2: 跨太平洋海底光缆 -->
+<article class="dispatch-card">
+<div class="dispatch-meta">
+<span class="dispatch-tag">网络常识</span>
+<time datetime="2026-11-10">2026-11-10</time>
+</div>
+<h2 class="dispatch-title">
+<a href="submarine-cable-routes-pacific-transit.html">海外访问突然变慢就是海缆故障吗：公告、路径与业务影响核对</a>
+</h2>
+<p class="dispatch-snippet">
           光缆故障时流量会被绕路，延迟随之升高，更换出口地区往往能缓解。
         </p>
-          <a href="submarine-cable-routes-pacific-transit.html" class="dispatch-read-more">
+<a class="dispatch-read-more" href="submarine-cable-routes-pacific-transit.html">
             探索深空通讯 <span>✦</span>
-          </a>
-        </article>
-
-        <!-- 文章 3: 无盘内存防御 -->
-        <article class="dispatch-card">
-          <div class="dispatch-meta">
-            <span class="dispatch-tag">隐私常识</span>
-            <time datetime="2026-11-11">2026-11-11</time>
-          </div>
-          <h2 class="dispatch-title">
-            <a href="ram-diskless-server-privacy-defense.html">“纯内存”“零日志”怎么看：理性解读隐私宣传</a>
-          </h2>
-          <p class="dispatch-snippet">
+</a>
+</article>
+<!-- 文章 3: 无盘内存防御 -->
+<article class="dispatch-card">
+<div class="dispatch-meta">
+<span class="dispatch-tag">隐私常识</span>
+<time datetime="2026-11-11">2026-11-11</time>
+</div>
+<h2 class="dispatch-title">
+<a href="ram-diskless-server-privacy-defense.html">RAM无盘服务为何仍可能留下记录：从容器输出到远端日志逐层核对</a>
+</h2>
+<p class="dispatch-snippet">
           宣传词只是起点，隐私政策、实际记录范围和你自己的习惯才是关键。
         </p>
-          <a href="ram-diskless-server-privacy-defense.html" class="dispatch-read-more">
+<a class="dispatch-read-more" href="ram-diskless-server-privacy-defense.html">
             探索深空通讯 <span>✦</span>
-          </a>
-        </article>
-
-        <!-- 文章 4: DNS 协议安全 -->
-        <article class="dispatch-card">
-          <div class="dispatch-meta">
-            <span class="dispatch-tag">排障</span>
-            <time datetime="2026-11-13">2026-11-13</time>
-          </div>
-          <h2 class="dispatch-title">
-            <a href="encrypted-dns-leak-prevention-handbook.html">Windows 与 macOS 排查 DNS 缓存：刷新、hosts 与 IPv6</a>
-          </h2>
-          <p class="dispatch-snippet">
+</a>
+</article>
+<!-- 文章 4: DNS 协议安全 -->
+<article class="dispatch-card">
+<div class="dispatch-meta">
+<span class="dispatch-tag">排障</span>
+<time datetime="2026-11-13">2026-11-13</time>
+</div>
+<h2 class="dispatch-title">
+<a href="encrypted-dns-leak-prevention-handbook.html">DoH和DoT开启后仍解析异常：浏览器、系统与代理DNS路径核对</a>
+</h2>
+<p class="dispatch-snippet">
           先刷新缓存，再检查 hosts 文件，最后确认 IPv6 是否干扰了解析。
         </p>
-          <a href="encrypted-dns-leak-prevention-handbook.html" class="dispatch-read-more">
+<a class="dispatch-read-more" href="encrypted-dns-leak-prevention-handbook.html">
             探索深空通讯 <span>✦</span>
-          </a>
-        </article>
-
-        <!-- 文章 5: QUIC 与 HTTP/3 -->
-        <article class="dispatch-card">
-          <div class="dispatch-meta">
-            <span class="dispatch-tag">协议常识</span>
-            <time datetime="2026-11-12">2026-11-12</time>
-          </div>
-          <h2 class="dispatch-title">
-            <a href="quic-http3-congestion-control-advances.html">QUIC 与 HTTP/3 是什么：为什么有时关掉它反而更稳</a>
-          </h2>
-          <p class="dispatch-snippet">
+</a>
+</article>
+<!-- 文章 5: QUIC 与 HTTP/3 -->
+<article class="dispatch-card">
+<div class="dispatch-meta">
+<span class="dispatch-tag">协议常识</span>
+<time datetime="2026-11-12">2026-11-12</time>
+</div>
+<h2 class="dispatch-title">
+<a href="quic-http3-congestion-control-advances.html">HTTP3真的更快吗：查看h3连接、比较缓存与解释丢包影响</a>
+</h2>
+<p class="dispatch-snippet">
           QUIC 基于 UDP，遇到不支持 UDP 的链路可能变慢，临时关闭可以帮助判断问题。
         </p>
-          <a href="quic-http3-congestion-control-advances.html" class="dispatch-read-more">
+<a class="dispatch-read-more" href="quic-http3-congestion-control-advances.html">
             探索深空通讯 <span>✦</span>
-          </a>
-        </article>
-
-        <!-- 文章 6: 分布式远程办公 -->
-        <article class="dispatch-card">
-          <div class="dispatch-meta">
-            <span class="dispatch-tag">开发者</span>
-            <time datetime="2026-11-14">2026-11-14</time>
-          </div>
-          <h2 class="dispatch-title">
-            <a href="distributed-remote-workspace-connectivity.html">Git 克隆太慢怎么办：HTTP 代理与 SSH 代理的设置</a>
-          </h2>
-          <p class="dispatch-snippet">
+</a>
+</article>
+<!-- 文章 6: 分布式远程办公 -->
+<article class="dispatch-card">
+<div class="dispatch-meta">
+<span class="dispatch-tag">开发者</span>
+<time datetime="2026-11-14">2026-11-14</time>
+</div>
+<h2 class="dispatch-title">
+<a href="distributed-remote-workspace-connectivity.html">远程开发新人拉仓库很慢：代码、依赖与团队验收环境分开准备</a>
+</h2>
+<p class="dispatch-snippet">
           HTTPS 用 http.proxy，SSH 用 ProxyCommand，两种方式各自配置，互不影响。
         </p>
-          <a href="distributed-remote-workspace-connectivity.html" class="dispatch-read-more">
+<a class="dispatch-read-more" href="distributed-remote-workspace-connectivity.html">
             探索深空通讯 <span>✦</span>
-          </a>
-        </article>
+</a>
+</article>
+</div>
+</div>
+</main>
+<!-- 页脚仅保留 4 个独立页面 -->
+<footer class="cosmic-footer">
+<div class="cosmic-wrapper">
+<nav class="footer-orbital-links">
+<a href="sitemap.html">网站地图</a>
+<a href="about.html">关于我们</a>
+<a href="terms.html">服务条款</a>
+<a href="privacy.html">隐私政策</a>
+</nav>
+<div class="footer-starlight-copy">
+        © 2026 Runway Network Services. 保留所有权利。
       </div>
-    </div>
-  </main>
-
-  <!-- 页脚仅保留 4 个独立页面 -->
-  <footer class="cosmic-footer">
-    <div class="cosmic-wrapper">
-      <nav class="footer-orbital-links">
-        <a href="sitemap.html">网站地图</a>
-        <a href="about.html">关于我们</a>
-        <a href="terms.html">服务条款</a>
-        <a href="privacy.html">隐私政策</a>
-      </nav>
-      <div class="footer-starlight-copy">
-        &copy; 2026 Runway Network Services. 保留所有权利。
-      </div>
-    </div>
-  </footer>
-
-  <!-- 移动端导航交互逻辑 -->
-  <script>
+</div>
+</footer>
+<!-- 移动端导航交互逻辑 -->
+<script>
     document.addEventListener('DOMContentLoaded', function() {
       var toggle = document.getElementById('cosmicMenuToggle');
       var panel = document.getElementById('cosmicMobilePanel');
@@ -255,6 +238,5 @@
       }
     });
   </script>
-
 </body>
 </html>

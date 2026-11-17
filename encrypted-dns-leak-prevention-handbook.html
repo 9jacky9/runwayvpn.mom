@@ -1,154 +1,124 @@
 <!DOCTYPE html>
+
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Windows 与 macOS 排查 DNS 缓存：刷新、hosts 与 IPv6 - 星际视界</title>
-  <meta name="description" content="改了节点或规则，网站却仍然打不开或访问到旧地址？可能是 DNS 缓存或 hosts 文件造成。介绍 Windows 与 macOS 的刷新方法与排查顺序。">
-  <meta name="keywords" content="DoH协议, DoT协议, DNS防污染, DNS泄露防护, 域名劫持, 加密DNS, 科学上网设置">
-  <link rel="canonical" href="https://runwayvpn.mom/encrypted-dns-leak-prevention-handbook.html">
-  
-  <meta property="og:type" content="article">
-  <meta property="og:site_name" content="Runway">
-  <meta property="og:title" content="Windows 与 macOS 排查 DNS 缓存：刷新、hosts 与 IPv6 - 星际视界">
-  <meta property="og:description" content="改了节点或规则，网站却仍然打不开或访问到旧地址？可能是 DNS 缓存或 hosts 文件造成。介绍 Windows 与 macOS 的刷新方法与排查顺序。">
-  <meta property="og:url" content="https://runwayvpn.mom/encrypted-dns-leak-prevention-handbook.html">
-  <meta property="og:image" content="https://runwayvpn.mom/og-preview.jpg">
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Runway 首页",
-        "item": "https://runwayvpn.mom/"
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "星际视界",
-        "item": "https://runwayvpn.mom/dispatch.html"
-      },
-      {
-        "@type": "ListItem",
-        "position": 3,
-        "name": "DoH与DoT安全加密解析",
-        "item": "https://runwayvpn.mom/encrypted-dns-leak-prevention-handbook.html"
-      }
-    ]
-  }
-  </script>
-
-  <link rel="stylesheet" href="style.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DoH和DoT开启后仍解析异常：浏览器、系统与代理DNS路径核对</title>
+<meta content="DoH和DoT开启后仍解析异常：浏览器、系统与代理DNS路径核对，提供分阶段检查、实际操作与结果解释，避免把宣传名词当作已验证性能。" name="description"/>
+<meta content="DoH协议, DoT协议, DNS防污染, DNS泄露防护, 域名劫持, 加密DNS, 科学上网设置" name="keywords"/>
+<link href="https://runwayvpn.mom/encrypted-dns-leak-prevention-handbook.html" rel="canonical"/>
+<meta content="article" property="og:type"/>
+<meta content="Runway" property="og:site_name"/>
+<meta content="DoH和DoT开启后仍解析异常：浏览器、系统与代理DNS路径核对" property="og:title"/>
+<meta content="DoH和DoT开启后仍解析异常：浏览器、系统与代理DNS路径核对，提供分阶段检查、实际操作与结果解释，避免把宣传名词当作已验证性能。" property="og:description"/>
+<meta content="https://runwayvpn.mom/encrypted-dns-leak-prevention-handbook.html" property="og:url"/>
+<meta content="https://runwayvpn.mom/og-preview.jpg" property="og:image"/>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Runway 首页",
+      "item": "https://runwayvpn.mom/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "星际视界",
+      "item": "https://runwayvpn.mom/dispatch.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "DoH和DoT开启后仍解析异常：浏览器、系统与代理DNS路径核对",
+      "item": "https://runwayvpn.mom/encrypted-dns-leak-prevention-handbook.html"
+    }
+  ]
+}</script>
+<link href="style.css" rel="stylesheet"/>
 </head>
 <body>
-
-  <!-- 深空星轨报头 -->
-  <header class="orbital-header">
-    <div class="cosmic-wrapper orbital-bar">
-      <a href="index.html" class="orbital-logo" aria-label="Runway 首页">
-        <svg viewBox="0 0 210 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="26" cy="21" rx="20" ry="8" stroke="#3B82F6" stroke-width="1.8" transform="rotate(-25 26 21)" stroke-dasharray="3 2"/>
-          <circle cx="26" cy="21" r="11" fill="#2563EB"/>
-          <circle cx="34" cy="14" r="2.5" fill="#F59E0B"/>
-          <text x="56" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="800" letter-spacing="2.5" fill="#FFFFFF">RUNWAY</text>
-        </svg>
-      </a>
-
-      <!-- 桌面端星轨导航菜单 -->
-      <nav class="orbital-nav" aria-label="全域导航菜单">
-        <a href="index.html#strength">核心实力</a>
-        <a href="index.html#orbit-media">全域加速</a>
-        <a href="index.html#pricing">漫游方案</a>
-        <a href="index.html#transmissions">用户心声</a>
-        <a href="index.html#faq">常见问答</a>
-        <a href="dispatch.html" style="color: var(--amber-star);">星际视界</a>
-      </nav>
-
-      <div class="orbital-actions">
-        <a href="https://ww012.twilightaff.com/#/?code=A56DH1Af" target="_blank" rel="nofollow" class="cosmic-btn btn-ghost">登录控制台</a>
-        <a href="https://ww012.twilightaff.com/#/?code=A56DH1Af" target="_blank" rel="nofollow" class="cosmic-btn btn-starlight">获取漫游通行证</a>
-      </div>
-
-      <button class="orbital-menu-toggle" id="cosmicMenuToggle" aria-label="切换导航菜单" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-
-    <div class="orbital-mobile-panel" id="cosmicMobilePanel">
-      <ul class="orbital-mobile-links">
-        <li><a href="index.html#strength"><span>连接实力与全域通达</span><small>✦</small></a></li>
-        <li><a href="index.html#orbit-media"><span>全域流媒体与智算加速</span><small>✦</small></a></li>
-        <li><a href="index.html#pricing"><span>无限漫游通行矩阵</span><small>✦</small></a></li>
-        <li><a href="index.html#transmissions"><span>全球漫游者声音</span><small>✦</small></a></li>
-        <li><a href="index.html#faq"><span>星际互联常见问答</span><small>✦</small></a></li>
-        <li><a href="dispatch.html"><span>星际视界前沿通讯</span><small>✦</small></a></li>
-      </ul>
-      <div class="orbital-mobile-actions">
-        <a href="index.html" class="cosmic-btn btn-ghost">返回主站</a>
-        <a href="https://ww012.twilightaff.com/#/?code=A56DH1Af" target="_blank" rel="nofollow" class="cosmic-btn btn-starlight">即刻启航订阅</a>
-      </div>
-    </div>
-  </header>
-
-  <main class="cosmic-article-sheet">
-    <div class="cosmic-wrapper">
-      <div class="cosmic-article-box">
-        
-        <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">
-          <a href="index.html" style="color: #93C5FD; text-decoration: none;">首页</a> ✦ 
+<!-- 深空星轨报头 -->
+<header class="orbital-header">
+<div class="cosmic-wrapper orbital-bar">
+<a aria-label="Runway 首页" class="orbital-logo" href="index.html">
+<svg fill="none" viewbox="0 0 210 42" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="26" cy="21" rx="20" ry="8" stroke="#3B82F6" stroke-dasharray="3 2" stroke-width="1.8" transform="rotate(-25 26 21)"></ellipse>
+<circle cx="26" cy="21" fill="#2563EB" r="11"></circle>
+<circle cx="34" cy="14" fill="#F59E0B" r="2.5"></circle>
+<text fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="800" letter-spacing="2.5" x="56" y="30">RUNWAY</text>
+</svg>
+</a>
+<!-- 桌面端星轨导航菜单 -->
+<nav aria-label="全域导航菜单" class="orbital-nav">
+<a href="index.html#strength">核心实力</a>
+<a href="index.html#orbit-media">全域加速</a>
+<a href="index.html#pricing">漫游方案</a>
+<a href="index.html#transmissions">用户心声</a>
+<a href="index.html#faq">常见问答</a>
+<a href="dispatch.html" style="color: var(--amber-star);">星际视界</a>
+</nav>
+<div class="orbital-actions">
+<a class="cosmic-btn btn-ghost" href="https://ww012.twilightaff.com/#/?code=A56DH1Af" rel="nofollow" target="_blank">登录控制台</a>
+<a class="cosmic-btn btn-starlight" href="https://ww012.twilightaff.com/#/?code=A56DH1Af" rel="nofollow" target="_blank">获取漫游通行证</a>
+</div>
+<button aria-expanded="false" aria-label="切换导航菜单" class="orbital-menu-toggle" id="cosmicMenuToggle">
+<span></span><span></span><span></span>
+</button>
+</div>
+<div class="orbital-mobile-panel" id="cosmicMobilePanel">
+<ul class="orbital-mobile-links">
+<li><a href="index.html#strength"><span>连接实力与全域通达</span><small>✦</small></a></li>
+<li><a href="index.html#orbit-media"><span>全域流媒体与智算加速</span><small>✦</small></a></li>
+<li><a href="index.html#pricing"><span>无限漫游通行矩阵</span><small>✦</small></a></li>
+<li><a href="index.html#transmissions"><span>全球漫游者声音</span><small>✦</small></a></li>
+<li><a href="index.html#faq"><span>星际互联常见问答</span><small>✦</small></a></li>
+<li><a href="dispatch.html"><span>星际视界前沿通讯</span><small>✦</small></a></li>
+</ul>
+<div class="orbital-mobile-actions">
+<a class="cosmic-btn btn-ghost" href="index.html">返回主站</a>
+<a class="cosmic-btn btn-starlight" href="https://ww012.twilightaff.com/#/?code=A56DH1Af" rel="nofollow" target="_blank">即刻启航订阅</a>
+</div>
+</div>
+</header>
+<main class="cosmic-article-sheet">
+<div class="cosmic-wrapper">
+<div class="cosmic-article-box">
+<div style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">
+<a href="index.html" style="color: #93C5FD; text-decoration: none;">首页</a> ✦ 
           <a href="dispatch.html" style="color: #93C5FD; text-decoration: none;">星际视界</a> ✦ 
           <span style="color: var(--amber-star);">系统设置</span>
-        </div>
-
-        <h1 class="cosmic-article-title">Windows 与 macOS 排查 DNS 缓存：刷新、hosts 与 IPv6</h1>
-        <div class="cosmic-article-meta">编撰：Runway 使用手记 · 日期：2026年11月13日 · 预计阅读时间：5分钟</div>
-
-        <div class="cosmic-article-body">
-<h2>一、为什么会有缓存</h2>
-<p>系统和浏览器都会把域名解析结果缓存一段时间，减少重复查询。节点或规则变化后，旧缓存可能让你仍然访问到旧结果。</p>
-<h2>二、刷新系统缓存</h2>
-<p>Windows 在命令提示符里执行刷新 DNS 的命令；macOS 则通过终端命令重启相关服务。刷新后重新打开浏览器测试。</p>
-<h2>三、浏览器自己的缓存</h2>
-<p>浏览器还有自己的 DNS 缓存，可以在设置页中清除，或者重启浏览器、换用无痕窗口。</p>
-<h2>四、检查 hosts 文件</h2>
-<p>hosts 文件里的手动条目优先级很高。如果曾经添加过某个域名，它可能一直指向旧地址。把不需要的条目删除或注释即可。</p>
-<h2>五、IPv6 的影响</h2>
-<p>当 IPv6 解析未被客户端处理时，部分流量会绕过代理。可以先暂时关闭系统的 IPv6 做对比测试。</p>
-<h2>小结</h2>
-<p>缓存、hosts、IPv6 三项检查完，大部分“改了没效果”的问题都能找到原因。</p>
-        </div>
-
-        <div class="cosmic-author-footer">
-          <div>
-            <strong style="color: #FFFFFF;">Runway 深空网络架构组</strong>
-            <p style="font-size: 13px; color: var(--text-muted); margin: 4px 0 0;">探索深海光缆通信与纯内存安全防线的前沿实验室</p>
-          </div>
-          <a href="dispatch.html" class="dispatch-read-more">✦ 返回星际视界专栏</a>
-        </div>
-
+</div>
+<h1 class="cosmic-article-title">DoH和DoT开启后仍解析异常：浏览器、系统与代理DNS路径核对</h1>
+<div class="cosmic-article-meta">编撰：Runway 使用手记 · 日期：2026年11月13日 · 预计阅读时间：5分钟</div>
+<div class="cosmic-article-body"><div data-swc-article-body="2026-11-16"><h2>加密解析只覆盖特定通信段</h2><p>DoH通过HTTPS传送DNS查询，DoT通过TLS保护DNS通信。它们可以减少查询在设备与所选解析服务之间被明文观察的机会，但不自动让解析服务可信，也不保证所有应用使用同一条路径。排查时先确认谁发起查询、发给谁和何时回退，不能只看一个加密开关就宣布整台设备所有解析都符合预期。</p><h2>先列出设备上的解析参与者</h2><p>系统网络设置、浏览器、代理客户端、企业管理软件与某些应用可能分别处理DNS。建立一张四列表：组件、当前解析设置、预期服务、验证方式。没有明确设置的项写默认或待核，不凭习惯补全。浏览器网页正常而桌面应用失败，正说明需要分别核对，不能把一种软件的结果套到整台电脑。</p><h2>第一步保存当前配置与现象</h2><p>记录系统版本、浏览器版本、网络接入和失败域名，保留错误原文。先确认拼写正确且目标本身存在，再调查解析。不要一次清空缓存、改地址族、换解析商和重装客户端，多个变化会让成功原因无法解释。工作设备由管理员管理时，先确认哪些设置允许用户自行调整。</p><h2>第二步查看浏览器的保护级别</h2><p>Firefox官方在设置的隐私与安全相关区域提供DNS over HTTPS保护级别，具体模式可能有不同启用与回退行为。打开当前版本设置，记录实际选择与解析提供方，再阅读对应说明。不要只看到已开启就忽略网络环境例外；也不要把较严格模式在某个网络失败，解释成所有加密解析都不适合使用。</p><h2>第三步核对系统与浏览器是否一致</h2><p>系统查询工具通常观察系统解析路径，浏览器可能使用自己的DoH，因此两者返回表现不同并不奇怪。分别在浏览器访问和系统只读查询中记录结果，注明来源。查询成功只是得到一个答案，不等于应用后续连接成功。若域名已经解析而TLS连接失败，应转向证书、目标端口或路径调查，避免在DNS上无限打转。</p><h2>第四步确认代理客户端怎样处理解析</h2><p>某些配置让本地解析，另一些由远端处理或按规则选择。按当前客户端文档查看模式与设置，不把全局代理四个字理解为覆盖所有DNS。出现分流时，同一设备的不同目标可能采用不同路径。记录目标与实际结果，特别注意本地设备名称和内部域名，不能为了外部访问把必要的内网解析一并破坏。</p><h2>回退行为需要明确而不是猜测</h2><p>加密解析服务不可达时，软件可能报错、提示或按设定采用其他路径，具体取决于产品与模式。若你有严格要求，就需要核对该行为并在受控环境验证；若优先保持可用性，也应知道回退可能改变隐私边界。不能在未观察的情况下同时承诺永不泄露与任何网络都自动可用，这两类目标需要明确取舍。</p><h2>检测网站的结果只代表一次观察</h2><p>所谓DNS泄露测试通常依据它收到的查询来推断解析来源，不能证明设备每个应用和未来所有请求都相同。对结果保存时间、浏览器和配置，重复时保持条件一致。多个解析地址出现也需要结合服务架构解释，不宜只看数量就下结论。测试页面无法代替对软件设置与组织网络策略的理解。</p><h2>公共热点可能先要求正常认证</h2><p>尚未完成酒店或机场门户认证时，外部解析与连接可能无法正常工作。先按场所确认的方式完成接入，再检查加密解析，不要永久关闭证书验证或安装陌生配置来绕过问题。若门户行为异常，可使用自己掌握的接入处理必要任务。网络认证、DNS和网站身份验证是连续但不同的环节。</p><h2>选择服务时看配置支持与解释能力</h2><p>比较<a href="https://dajichang.mom/">加密DNS机场配置选择</a>中的候选，应核对服务交付与当前客户端是否兼容，以及解析模式有没有清楚说明。节点数量不能证明DNS策略正确，某个地区标签也不能证明查询一定发生在该地区。实际验证需要结合设备、浏览器和应用，不用广告中的绝对隐私语句代替检查。</p><h2>修复后验证需要保留的本地功能</h2><p>测试常用网站、公司内部资源和家庭局域网设备，确认没有因解析调整造成新的失效。必要时恢复不相关的临时改动，留下生效项与原因。公开求助只提供脱敏错误和配置结构，不泄露私人订阅与企业内部域名清单。能够恢复原设置，是任何网络排查方案应具备的基本条件。</p><h2>形成一份可复查的路径说明</h2><p>最终记录浏览器用什么、系统用什么、代理处理哪些目标，以及失败时会怎样。未知项保持未知，版本更新后复查关键行为。加密DNS的价值在于保护明确的一段查询路径；只有知道这段路径的起点、终点和例外，才能合理评价它对实际使用的帮助。</p></div></div>
+<div class="cosmic-author-footer">
+<div>
+<strong style="color: #FFFFFF;">Runway 深空网络架构组</strong>
+<p style="font-size: 13px; color: var(--text-muted); margin: 4px 0 0;">探索深海光缆通信与纯内存安全防线的前沿实验室</p>
+</div>
+<a class="dispatch-read-more" href="dispatch.html">✦ 返回星际视界专栏</a>
+</div>
+</div>
+</div>
+</main>
+<footer class="cosmic-footer">
+<div class="cosmic-wrapper">
+<nav class="footer-orbital-links">
+<a href="sitemap.html">网站地图</a>
+<a href="about.html">关于我们</a>
+<a href="terms.html">服务条款</a>
+<a href="privacy.html">隐私政策</a>
+</nav>
+<div class="footer-starlight-copy">
+        © 2026 Runway Network Services. 保留所有权利。
       </div>
-    </div>
-  </main>
-
-  <footer class="cosmic-footer">
-    <div class="cosmic-wrapper">
-      <nav class="footer-orbital-links">
-        <a href="sitemap.html">网站地图</a>
-        <a href="about.html">关于我们</a>
-        <a href="terms.html">服务条款</a>
-        <a href="privacy.html">隐私政策</a>
-      </nav>
-      <div class="footer-starlight-copy">
-        &copy; 2026 Runway Network Services. 保留所有权利。
-      </div>
-    </div>
-  </footer>
-
-  <script>
+</div>
+</footer>
+<script>
     document.addEventListener('DOMContentLoaded', function() {
       var toggle = document.getElementById('cosmicMenuToggle');
       var panel = document.getElementById('cosmicMobilePanel');
@@ -177,6 +147,5 @@
       }
     });
   </script>
-
 </body>
 </html>
