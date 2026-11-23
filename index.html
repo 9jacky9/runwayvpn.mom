@@ -73,6 +73,7 @@
   }
   </script>
 <link href="style.css" rel="stylesheet"/>
+<style id="maintenance-anchor-offset">#pricing{scroll-margin-top:180px;}</style>
 </head>
 <body>
 <!-- 顶部星轨导航栏 -->
@@ -148,7 +149,7 @@
 <a class="cosmic-btn btn-starlight" href="https://ww012.twilightaff.com/#/?code=A56DH1Af" rel="nofollow" target="_blank">
             开始免费试用
           </a>
-<a class="cosmic-btn btn-dofollow-recommend" href="#plans" target="_blank">
+<a class="cosmic-btn btn-dofollow-recommend" href="#pricing">
             查看套餐资费
           </a>
 </div>
@@ -516,5 +517,23 @@
       }
     });
   </script>
+<script id="maintenance-anchor-offset-script">
+(() => {
+  const targets = ["pricing"];
+  const headers = [...document.querySelectorAll('header,nav,[class*="nav"],[class*="header"]')];
+  const update = () => {
+    const height = Math.max(0, ...headers.map(el => {
+      const box = el.getBoundingClientRect();
+      const position = getComputedStyle(el).position;
+      return ['fixed','sticky'].includes(position) && box.width > innerWidth / 2 && box.height < 400 ? box.height : 0;
+    }));
+    targets.forEach(id => { const el = document.getElementById(id); if (el) el.style.scrollMarginTop = Math.ceil(height + 16) + 'px'; });
+  };
+  update();
+  addEventListener('resize', update, {passive: true});
+  if ('ResizeObserver' in window) { const observer = new ResizeObserver(update); headers.forEach(el => observer.observe(el)); }
+  if (document.fonts) document.fonts.ready.then(update);
+})();
+</script>
 </body>
 </html>
